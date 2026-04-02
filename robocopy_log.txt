@@ -1,0 +1,27 @@
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Herramienta para copia eficaz de archivos         
+-------------------------------------------------------------------------------
+
+  Inicio: Friday, March 27, 20267:36:43 PM
+   Origen : C:\Users\Sebastian Escobar P\Documents\Sebastian\Oficina\Sescop LLC\Imagenes productos\
+     Destino : C:\Users\Sebastian Escobar P\.gemini\antigravity\scratch\Proyectos_Antigravity\Orders_Catalog\public\images\products\
+
+    Archivos: *.*
+	    
+  Opciones: *.* /S /E /DCOPY:DA /COPY:DAT /NP /MT:8 /R:1 /W:1 
+
+------------------------------------------------------------------------------
+
+	*Directorio EXTRA      -1	C:\Users\Sebastian Escobar P\.gemini\antigravity\scratch\Proyectos_Antigravity\Orders_Catalog\public\images\products\.vercel\
+	  *Archivo EXTRA		       9	C:\Users\Sebastian Escobar P\.gemini\antigravity\scratch\Proyectos_Antigravity\Orders_Catalog\public\images\products\.gitignore
+
+------------------------------------------------------------------------------
+
+               Total   Copiado   OmitidoNo coincidencia     ERROR    Extras
+Director.:         1         1         1         0         0         1
+ Archivos:       144         0       144         0         0         1
+    Bytes:   13.54 m         0   13.54 m         0         0         9
+   Tiempo:   0:00:00   0:00:00                       0:00:00   0:00:00
+   Finalizado: Friday, March 27, 2026 7:36:43 PM
+
