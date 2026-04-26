@@ -14,18 +14,23 @@ interface ProductGalleryProps {
 
 export default function ProductGallery({ onClose }: ProductGalleryProps) {
     const [products, setProducts] = useState<Product[]>([]);
-    const { addToCart, priceList, cart } = useOrder();
+    const { addToCart, priceList, cart, isAdmin } = useOrder();
     const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
     const [isGenerating, setIsGenerating] = useState(false);
 
     useEffect(() => {
-        fetch('/data/products.json')
+        const password = isAdmin ? 'sescop_admin_2026' : '';
+        fetch(`/api/products${password ? `?password=${password}` : ''}`)
             .then((res) => res.json())
             .then((data) => {
-                setProducts(data);
+                if (Array.isArray(data)) {
+                    setProducts(data);
+                } else {
+                    throw new Error('API did not return an array');
+                }
             })
-            .catch((err) => console.error('Error loading products:', err));
-    }, []);
+            .catch((err) => console.error('Error loading products from API:', err));
+    }, [isAdmin]);
 
     const handleDownloadCatalog = async () => {
         setIsGenerating(true);
@@ -173,7 +178,11 @@ export default function ProductGallery({ onClose }: ProductGalleryProps) {
                                         className="object-contain p-4 group-hover:scale-110 transition-transform duration-300"
                                     />
                                 ) : (
-                                    <Package className="h-12 w-12 text-zinc-200" />
+                                    <div className="w-full h-full bg-zinc-200 dark:bg-zinc-700 rounded-xl flex items-center justify-center p-4 text-center overflow-hidden">
+                                        <span className="text-zinc-500 dark:text-zinc-400 font-bold text-sm leading-tight line-clamp-4">
+                                            {product.name}
+                                        </span>
+                                    </div>
                                 )}
                             </div>
 

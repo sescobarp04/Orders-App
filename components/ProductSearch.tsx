@@ -93,7 +93,11 @@ export default function ProductSearch() {
                                         className="object-contain p-1"
                                     />
                                 ) : (
-                                    <Package className="h-8 w-8 text-zinc-300" />
+                                    <div className="w-full h-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center p-1 text-center overflow-hidden">
+                                        <span className="text-zinc-500 dark:text-zinc-400 font-bold text-[8px] leading-tight line-clamp-3">
+                                            {product.name}
+                                        </span>
+                                    </div>
                                 )}
                             </div>
 
