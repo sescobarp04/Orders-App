@@ -1,0 +1,74 @@
+================================================================================
+PROYECTO: ANTIGRAVITY ORDERS (Vendedora App)
+================================================================================
+
+1. DESCRIPCIÓN GENERAL
+--------------------------------------------------------------------------------
+Antigravity Orders es una aplicación web tipo Mobile POS (Punto de Venta Móvil) 
+diseñada específicamente para ser utilizada por vendedores en campo (iPad/Tablets). 
+Su propósito es facilitar la toma de pedidos de clientes de forma rápida y visual, 
+permitiendo generar cotizaciones y órdenes de compra en formatos digitales 
+(JSON, PDF, WhatsApp) que luego son procesados por la administración central.
+
+2. TECNOLOGÍAS UTILIZADAS
+--------------------------------------------------------------------------------
+- Framework: Next.js 15+ (App Router) con React 19.
+- Lenguaje: TypeScript (Tipado estricto).
+- Estilos: Tailwind CSS v4 (Moderno y de alto rendimiento).
+- Íconos: Lucide-React.
+- Generación de PDF: jsPDF (Generación del lado del cliente).
+- Base de Datos: JSON local (data/products.json) sincronizado desde Excel.
+- Scripts: Python (para procesamiento de datos) y Archivos Batch (.bat) para automatización.
+- Despliegue: Vercel.
+
+3. ESTRUCTURA DEL PROYECTO
+--------------------------------------------------------------------------------
+/app                -> Páginas y rutas de Next.js. El punto de entrada es page.tsx.
+/components         -> Componentes de UI (Galería de productos, buscador, resumen del carrito).
+/data               -> Contiene 'products.json', la base de datos de productos auto-generada.
+/lib                -> Lógica compartida, contextos (OrderContext) y utilidades.
+/public             -> Archivos estáticos.
+    /images/products -> Carpeta de fotos de productos (formato SKU.jpg).
+/scripts            -> Scripts de automatización como 'update_products.py'.
+/root               -> Archivos de configuración y accesos directos (.bat) para el admin.
+
+4. FUNCIONALIDADES ACTUALES
+--------------------------------------------------------------------------------
+- Catálogo Visual: Galería de productos con fotos automáticas por SKU.
+- Buscador Inteligente: Búsqueda rápida por nombre o SKU.
+- Gestión de Carrito: Agregar, quitar, aumentar/disminuir cantidades y limpiar pedido.
+- Información de Cliente: Formulario para capturar datos del cliente antes del pedido.
+- Generación de WhatsApp: Crea un mensaje formateado listo para enviar a la oficina.
+- Generación de SMS: Alternativa rápida para enviar resumen del pedido.
+- Exportación JSON: Genera el archivo técnico necesario para importar el pedido al sistema central (SESCOP).
+- Exportación PDF: Genera un documento profesional de "Orden de Compra" para el cliente.
+- Actualización vía Excel: El administrador puede actualizar precios y stock editando un archivo .xlsx y corriendo un script local.
+
+5. FLUJO DE TRABAJO (WORKFLOW)
+--------------------------------------------------------------------------------
+1. El vendedor abre la app en su iPad/Tablet (usualmente vía Vercel).
+2. Selecciona los productos y ajusta las cantidades en el carrito.
+3. Ingresa los datos del cliente en el resumen.
+4. Presiona "Finalizar y Confirmar Orden":
+   - El sistema genera un archivo .json con la estructura técnica del pedido.
+   - El vendedor envía este .json y/o el PDF al administrador vía WhatsApp.
+5. El administrador recibe el JSON y lo procesa en el sistema central (SESCOP) para generar órdenes a proveedores.
+
+6. EL PDF IMPRIMIBLE
+--------------------------------------------------------------------------------
+- Librería: jsPDF.
+- Ubicación del Código: Se encuentra en el componente 'components/CartSummary.tsx', específicamente dentro de la función 'handleDownloadPDF'.
+- Funcionamiento: La función carga el logo de SESCOP, toma los datos del cliente y los ítems del carrito, formatea una tabla con encabezados azules, incluye un subtotal de unidades y genera un archivo descargable llamado "PEDIDO_[Nombre_Cliente]_[Timestamp].pdf".
+
+7. UBICACIÓN DE ASSETS
+--------------------------------------------------------------------------------
+- Logo de Empresa: public/sescop-logo.png (Logo de SESCOP con fondo transparente).
+- Imágenes de Productos: public/images/products/
+  - Regla: Deben ser archivos .jpg y llamarse exactamente como el SKU (ej: A-TELA-CAJ.jpg).
+- Datos de Productos: data/products.json (No editar manualmente, se genera desde Excel).
+
+
+--------------------------------------------------------------------------------
+RESUMEN GENERADO EL: 26 de Abril, 2026
+PROPIEDAD DE: ANTIGRAVITY / SESCOP
+================================================================================

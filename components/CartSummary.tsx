@@ -78,96 +78,139 @@ export default function CartSummary({ onClose }: CartSummaryProps) {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     };
-    const handleDownloadPDF = () => {
+    const handleDownloadPDF = async () => {
         const doc = new jsPDF();
         const date = new Date().toLocaleDateString('en-US');
-        const margin = 20;
-        let y = 20;
+        const leftMargin = 14;
+        const topMargin = 10;
+        let y = topMargin;
 
-        doc.setFontSize(22);
-        doc.setTextColor(37, 99, 235);
-        doc.text("ORDEN DE COMPRA", margin, y);
-        y += 10;
-
-        doc.setFontSize(10);
-        doc.setTextColor(100, 100, 100);
-        doc.text(`Date: ${date}`, margin, y);
-        y += 10;
-
-        doc.setFontSize(11);
-        doc.setTextColor(0, 0, 0);
-        if (customerInfo.name) {
-            doc.text(`Customer: ${customerInfo.name}`, margin, y);
-            y += 7;
-        }
-        if (customerInfo.address) {
-            doc.text(`Address: ${customerInfo.address}`, margin, y);
-            y += 7;
-        }
-        if (customerInfo.phone) {
-            doc.text(`Phone: ${customerInfo.phone}`, margin, y);
-            y += 7;
-        }
-        if (customerInfo.email) {
-            doc.text(`Email: ${customerInfo.email}`, margin, y);
-            y += 7;
-        }
-        y += 5;
-
-        // Table Header
-        doc.setDrawColor(230, 230, 230);
-        doc.line(margin, y, 190, y);
-        y += 7;
-
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "bold");
-        doc.text("Producto", margin, y);
-        doc.text("Cant", 145, y);
-        doc.text("Precio", 165, y);
-        doc.text("Total", 190, y, { align: "right" });
-        y += 5;
-
-        doc.line(margin, y, 190, y);
-        y += 10;
-
-        // Items
-        doc.setFont("helvetica", "normal");
-        cart.forEach((item) => {
-            if (y > 270) {
-                doc.addPage();
-                y = 20;
+        const createPDF = (imgData?: string) => {
+            if (imgData) {
+                try {
+                    const imgProps = doc.getImageProperties(imgData);
+                    const imgWidth = 40;
+                    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+                    doc.addImage(imgData, 'PNG', leftMargin, y, imgWidth, imgHeight);
+                    y += imgHeight + 12; // Spacing below logo
+                } catch (error) {
+                    console.error("Error adding logo to PDF:", error);
+                    y = 22; 
+                }
+            } else {
+                y = 22;
             }
 
-            const productName = item.product.name.length > 80
-                ? item.product.name.substring(0, 77) + "... "
-                : item.product.name;
-
-            doc.text(productName, margin, y);
-            doc.text(item.quantity.toString(), 148, y);
-            doc.text(`$${item.pricePerUnit.toLocaleString('en-US')}`, 160, y);
-            doc.text(`$${item.total.toLocaleString('en-US')}`, 190, y, { align: "right" });
+            doc.setFontSize(22);
+            doc.setTextColor(37, 99, 235);
+            doc.text("ORDEN DE COMPRA", leftMargin, y);
             y += 10;
-        });
 
-        // Total Section
-        y += 10;
-        doc.setDrawColor(37, 99, 235);
-        doc.line(margin, y, 190, y);
-        y += 10;
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Date: ${date}`, leftMargin, y);
+            y += 10;
 
-        doc.setFontSize(14);
-        doc.setFont("helvetica", "bold");
-        doc.text("TOTAL", margin, y);
-        doc.text(`$${totalAmount.toLocaleString('en-US')}`, 190, y, { align: "right" });
+            doc.setFontSize(11);
+            doc.setTextColor(0, 0, 0);
+            if (customerInfo.name) {
+                doc.text(`Customer: ${customerInfo.name}`, leftMargin, y);
+                y += 7;
+            }
+            if (customerInfo.address) {
+                doc.text(`Address: ${customerInfo.address}`, leftMargin, y);
+                y += 7;
+            }
+            if (customerInfo.phone) {
+                doc.text(`Phone: ${customerInfo.phone}`, leftMargin, y);
+                y += 7;
+            }
+            if (customerInfo.email) {
+                doc.text(`Email: ${customerInfo.email}`, leftMargin, y);
+                y += 7;
+            }
+            y += 5;
 
-        // Footer
-        doc.setFontSize(8);
-        doc.setFont("helvetica", "italic");
-        doc.setTextColor(150, 150, 150);
-        doc.text("Generado por Orders App - Indiana, USA", margin, 285);
+            // Table Header
+            doc.setDrawColor(230, 230, 230);
+            doc.line(leftMargin, y, 196, y);
+            y += 7;
 
-        doc.save(`PEDIDO_${customerInfo.name || 'SIN_NOMBRE'}_${new Date().getTime()}.pdf`);
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "bold");
+            doc.text("Producto", leftMargin, y);
+            doc.text("Cant", 145, y);
+            doc.text("Precio", 165, y);
+            doc.text("Total", 196, y, { align: "right" });
+            y += 5;
+
+            doc.line(leftMargin, y, 196, y);
+            y += 10;
+
+            // Items
+            doc.setFont("helvetica", "normal");
+            cart.forEach((item) => {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+
+                const productName = item.product.name.length > 80
+                    ? item.product.name.substring(0, 77) + "... "
+                    : item.product.name;
+
+                doc.text(productName, leftMargin, y);
+                doc.text(item.quantity.toString(), 148, y);
+                doc.text(`$${item.pricePerUnit.toLocaleString('en-US')}`, 160, y);
+                doc.text(`$${item.total.toLocaleString('en-US')}`, 196, y, { align: "right" });
+                y += 10;
+            });
+
+            // Total Units Row (SUBTOTAL)
+            doc.setDrawColor(230, 230, 230);
+            doc.line(leftMargin, y - 5, 196, y - 5);
+            doc.setFont("helvetica", "bold");
+            doc.text("Total Unidades", leftMargin, y);
+            const totalUnits = cart.reduce((acc, item) => acc + item.quantity, 0);
+            doc.text(totalUnits.toString(), 148, y);
+            y += 10;
+
+            // Total Amount Section
+            y += 5;
+            doc.setDrawColor(37, 99, 235);
+            doc.line(leftMargin, y, 196, y);
+            y += 10;
+
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("TOTAL", leftMargin, y);
+            doc.text(`$${totalAmount.toLocaleString('en-US')}`, 196, y, { align: "right" });
+
+            // Footer
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "italic");
+            doc.setTextColor(150, 150, 150);
+            doc.text("Generado por Orders App - Indiana, USA", leftMargin, 285);
+
+            doc.save(`PEDIDO_${customerInfo.name || 'SIN_NOMBRE'}_${new Date().getTime()}.pdf`);
+        };
+
+        try {
+            const response = await fetch('/sescop-logo.png');
+            if (!response.ok) throw new Error("Logo not found");
+            const blob = await response.blob();
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                createPDF(reader.result as string);
+            };
+            reader.readAsDataURL(blob);
+        } catch (error) {
+            console.error("Logo fetch failed, generating without logo:", error);
+            createPDF();
+        }
     };
+
+
 
 
     if (cart.length === 0) {
